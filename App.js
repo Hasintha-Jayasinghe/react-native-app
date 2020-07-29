@@ -1,48 +1,22 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  Platform,
-  ScrollView,
-} from "react-native";
-import JobCard from "./components/jobCard";
+import React from "react";
+import { StyleSheet, Platform } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import Home from "./screens/home";
 
 const App = () => {
-  const [jobs, setJobs] = useState([
-    { job: "I will cut your grass", price: "RS 250", username: "Aron Young" },
-    { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
-    { job: "I will babysit", price: "RS 500", username: "Aron Young" },
-    { job: "I will be a friend", price: "RS 5000", username: "Aron Young" },
-    {
-      job: "I will marry your daughter",
-      price: "RS 100000",
-      username: "Aron Young",
-    },
-    { job: "I will be your bff", price: "RS 1500", username: "Aron Young" },
-    {
-      job: "i will do anything for cash",
-      price: "RS 1500",
-      username: "Aron Young",
-    },
-  ]);
+  const Stack = createStackNavigator();
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <ScrollView horizontal style={{ padding: 10 }}>
-          {jobs.map((job, i) => (
-            <JobCard
-              job={job.job}
-              price={job.price}
-              username={job.username}
-              key={i}
-            />
-          ))}
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ header: () => null }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
