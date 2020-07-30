@@ -1,21 +1,41 @@
 import React from "react";
 import { StyleSheet, Platform } from "react-native";
-import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./screens/home";
+import profile from "./screens/profile";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const App = () => {
-  const Stack = createStackNavigator();
+  const Tab = createBottomTabNavigator();
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ header: () => null }}
-        />
-      </Stack.Navigator>
+      <Tab.Navigator
+        initialRouteName="Home"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "ios-compass" : "ios-compass";
+            } else if (route.name === "Profile") {
+              iconName = focused ? "ios-person" : "ios-person";
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: "#fc6b03",
+          inactiveTintColor: "gray",
+        }}
+      >
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Profile" component={profile} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 };

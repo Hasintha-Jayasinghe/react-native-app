@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Platform,
   StatusBar,
-  Animated,
+  Text,
 } from "react-native";
 import JobCard from "../components/jobCard";
 
@@ -38,6 +38,16 @@ const Home = ({ navigation }) => {
           borderBottomRightRadius: 30,
         }}
       >
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: "bold",
+            color: "white",
+            marginLeft: 10,
+          }}
+        >
+          Explore
+        </Text>
         <View style={styles.jobsContainer}>
           <ScrollView
             horizontal
@@ -54,6 +64,7 @@ const Home = ({ navigation }) => {
             ))}
           </ScrollView>
         </View>
+        <Text style={{ fontSize: 40 }}>SOME</Text>
       </View>
     </View>
   );
@@ -63,8 +74,7 @@ const styles = StyleSheet.create({
   jobsContainer: {
     marginTop: Platform.OS === "android" ? 30 : 0,
     minHeight: 10,
-    height: 250,
-    zIndex: 10,
+    height: 275,
   },
 });
 

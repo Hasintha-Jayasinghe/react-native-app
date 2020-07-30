@@ -1,22 +1,25 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableHighlight, Text, View, Platform } from "react-native";
 
 const JobCard = ({ job, price, username }) => {
   return (
-    <TouchableOpacity
+    <TouchableHighlight
       style={{
         borderWidth: 1,
         borderRadius: 20,
         borderColor: "#e0e0e0",
         borderWidth: 0,
-        shadowColor: "#000000",
-        shadowOffset: { width: 2, height: 2 },
+        shadowColor: "#8888888",
+        shadowOffset: {
+          width: Platform.OS === "android" ? 2 : 0.5,
+          height: Platform.OS === "android" ? 2 : 0.5,
+        },
         shadowOpacity: 1,
         shadowRadius: 2,
-        elevation: 15,
+        elevation: 5,
         marginLeft: 5,
         marginRight: 5,
-        marginTop: 10,
+        marginTop: 50,
         padding: 10,
         minWidth: 200,
         maxWidth: 200,
@@ -25,35 +28,37 @@ const JobCard = ({ job, price, username }) => {
         backgroundColor: "#20e648",
       }}
     >
-      <Text
-        style={{
-          fontSize: 17,
-          color: "white",
-        }}
-        numberOfLines={1}
-      >
-        {job}
-      </Text>
-      <Text
-        style={{
-          fontSize: 14,
-          color: "white",
-          bottom: -120,
-          textAlign: "right",
-        }}
-      >
-        {price}
-      </Text>
-      <Text
-        style={{
-          fontSize: 14,
-          color: "white",
-          bottom: -100,
-        }}
-      >
-        {username}
-      </Text>
-    </TouchableOpacity>
+      <View>
+        <Text
+          style={{
+            fontSize: 17,
+            color: "white",
+          }}
+          numberOfLines={1}
+        >
+          {job}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: "white",
+            bottom: -120,
+            textAlign: "right",
+          }}
+        >
+          {username}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            color: "white",
+            bottom: -100,
+          }}
+        >
+          {price}
+        </Text>
+      </View>
+    </TouchableHighlight>
   );
 };
 
