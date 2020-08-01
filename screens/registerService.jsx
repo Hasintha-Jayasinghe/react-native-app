@@ -30,16 +30,18 @@ const RegisterScreen = () => {
         <Picker.Item label="Education" value="ed" />
         <Picker.Item label="Entertainment" value="en" />
       </Picker>
-      <FlatButton
-        title="Register"
-        style={{
-          flex: 1,
-          alignItems: "center",
-          padding: 100,
-          backgroundColor: "#ff724a",
-        }}
-        textStyle={{ color: "white", fontWeight: "bold", fontSize: 40 }}
-      />
+      <View style={{ flex: 1, alignItems: "center", marginTop: 20 }}>
+        <FlatButton
+          title="Register"
+          style={{
+            width: 140,
+            height: 60,
+            backgroundColor: "#ff724a",
+            padding: 5,
+          }}
+          textStyle={{ color: "white", fontWeight: "bold", fontSize: 30 }}
+        />
+      </View>
     </View>
   );
 };
