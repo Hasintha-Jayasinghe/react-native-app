@@ -1,22 +1,28 @@
 import React from "react";
-import { TouchableHighlight, Text, View, Platform } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  Platform,
+  Vibration,
+  Alert,
+} from "react-native";
 
 const JobCard = ({ job, price, username }) => {
   return (
-    <TouchableHighlight
+    <TouchableOpacity
       style={{
-        borderWidth: 1,
-        borderRadius: 20,
-        borderColor: "#e0e0e0",
         borderWidth: 0,
-        shadowColor: "#8888888",
+        borderRadius: 20,
+        borderColor: "#20e648",
+        shadowColor: "#888",
         shadowOffset: {
-          width: Platform.OS === "android" ? 2 : 0.5,
-          height: Platform.OS === "android" ? 2 : 0.5,
+          width: Platform.OS === "android" ? 4 : 0.5,
+          height: Platform.OS === "android" ? 4 : 0.5,
         },
         shadowOpacity: 1,
         shadowRadius: 2,
-        elevation: 5,
+        elevation: 10,
         marginLeft: 5,
         marginRight: 5,
         marginTop: 50,
@@ -26,6 +32,14 @@ const JobCard = ({ job, price, username }) => {
         minHeight: 200,
         maxHeight: 200,
         backgroundColor: "#20e648",
+      }}
+      activeOpacity={0.8}
+      onPress={() => {
+        Vibration.vibrate(100);
+        Alert.alert(job, price + "     " + username, [
+          { text: "Book" },
+          { text: "Never mind" },
+        ]);
       }}
     >
       <View>
@@ -58,7 +72,7 @@ const JobCard = ({ job, price, username }) => {
           {price}
         </Text>
       </View>
-    </TouchableHighlight>
+    </TouchableOpacity>
   );
 };
 

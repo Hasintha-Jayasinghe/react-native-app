@@ -18,10 +18,22 @@ const App = () => {
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
-            if (route.name === "Home") {
-              iconName = focused ? "ios-compass" : "ios-compass";
+            if (route.name === "Explore") {
+              iconName = focused
+                ? Platform.OS === "android"
+                  ? "md-compass"
+                  : "ios-compass"
+                : Platform.OS === "android"
+                ? "md-compass"
+                : "ios-compass";
             } else if (route.name === "Profile") {
-              iconName = focused ? "ios-person" : "ios-person";
+              iconName = focused
+                ? Platform.OS === "android"
+                  ? "md-person"
+                  : "ios-person"
+                : Platform.OS === "android"
+                ? "md-person"
+                : "ios-person";
             }
 
             // You can return any component that you like here!
@@ -33,7 +45,7 @@ const App = () => {
           inactiveTintColor: "gray",
         }}
       >
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Explore" component={Home} />
         <Tab.Screen name="Profile" component={profile} />
       </Tab.Navigator>
     </NavigationContainer>

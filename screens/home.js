@@ -6,8 +6,11 @@ import {
   Platform,
   StatusBar,
   Text,
+  SafeAreaView,
 } from "react-native";
 import JobCard from "../components/jobCard";
+import CategoryCard from "../components/categoryCard";
+import CardCollection from "../components/categoryCollection";
 
 const Home = ({ navigation }) => {
   const [jobs, setJobs] = useState([
@@ -16,7 +19,7 @@ const Home = ({ navigation }) => {
     { job: "I will babysit", price: "RS 500", username: "Aron Young" },
     { job: "I will be a friend", price: "RS 5000", username: "Aron Young" },
     {
-      job: "I will marry your daughter",
+      job: "I will marry your daughter or son",
       price: "RS 100000",
       username: "Aron Young",
     },
@@ -28,12 +31,16 @@ const Home = ({ navigation }) => {
     },
   ]);
   return (
-    <View>
-      <StatusBar backgroundColor="#fc6b03" />
+    <SafeAreaView>
+      {Platform.OS === "android" ? (
+        <StatusBar backgroundColor="#ff724a" />
+      ) : (
+        <StatusBar barStyle="default" />
+      )}
       <View
         style={{
           height: 280,
-          backgroundColor: "#fc6b03",
+          backgroundColor: "#ff724a",
           borderBottomLeftRadius: 30,
           borderBottomRightRadius: 30,
         }}
@@ -51,7 +58,7 @@ const Home = ({ navigation }) => {
         <View style={styles.jobsContainer}>
           <ScrollView
             horizontal
-            style={{ padding: 10 }}
+            style={{ padding: 2 }}
             showsHorizontalScrollIndicator={false}
           >
             {jobs.map((job, i) => (
@@ -64,9 +71,24 @@ const Home = ({ navigation }) => {
             ))}
           </ScrollView>
         </View>
-        <Text style={{ fontSize: 40 }}>SOME</Text>
       </View>
-    </View>
+      <View style={styles.catogoryContainer}>
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+          <CardCollection>
+            <CategoryCard name="Gardening" icon="flower" />
+            <CategoryCard name="Lifestyle" icon="spa" />
+          </CardCollection>
+          <CardCollection>
+            <CategoryCard name="Services" icon="cogs" />
+            <CategoryCard name="Entertainment" icon="drama-masks" />
+          </CardCollection>
+          <CardCollection>
+            <CategoryCard name="Education" icon="book-open" />
+            <CategoryCard name="Physical Activities" icon="badminton" />
+          </CardCollection>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -74,7 +96,13 @@ const styles = StyleSheet.create({
   jobsContainer: {
     marginTop: Platform.OS === "android" ? 30 : 0,
     minHeight: 10,
-    height: 275,
+    height: 300,
+    width: "100%",
+  },
+  catogoryContainer: {
+    marginTop: 50,
+    padding: 10,
+    minHeight: 460,
   },
 });
 
