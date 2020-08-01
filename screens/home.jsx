@@ -8,11 +8,14 @@ import {
   Text,
   SafeAreaView,
 } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+
 import JobCard from "../components/jobCard";
 import CategoryCard from "../components/categoryCard";
 import CardCollection from "../components/categoryCollection";
+import JobDetails from "./jobDetails";
 
-const Home = ({ navigation }) => {
+const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([
     { job: "I will cut your grass", price: "RS 250", username: "Aron Young" },
     { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
@@ -30,6 +33,7 @@ const Home = ({ navigation }) => {
       username: "Aron Young",
     },
   ]);
+
   return (
     <SafeAreaView>
       {Platform.OS === "android" ? (
@@ -37,12 +41,13 @@ const Home = ({ navigation }) => {
       ) : (
         <StatusBar barStyle="default" />
       )}
+
       <View
         style={{
           height: 280,
           backgroundColor: "#ff724a",
-          borderBottomLeftRadius: 30,
-          borderBottomRightRadius: 30,
+          borderBottomLeftRadius: 60,
+          borderBottomRightRadius: 60,
         }}
       >
         <Text
@@ -67,6 +72,7 @@ const Home = ({ navigation }) => {
                 price={job.price}
                 username={job.username}
                 key={i}
+                navigation={navigation}
               />
             ))}
           </ScrollView>
@@ -92,6 +98,36 @@ const Home = ({ navigation }) => {
   );
 };
 
+const Home = () => {
+  const Stack = createStackNavigator();
+
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="home-home"
+        component={Screen}
+        options={{
+          header: () => null,
+          headerStyle: {
+            backgroundColor: "#ff724a",
+          },
+        }}
+      />
+      <Stack.Screen
+        name="details"
+        component={JobDetails}
+        options={{
+          headerTitle: () => null,
+          headerStyle: {
+            backgroundColor: "#ff724a",
+          },
+          headerTintColor: "#fff",
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const styles = StyleSheet.create({
   jobsContainer: {
     marginTop: Platform.OS === "android" ? 30 : 0,
@@ -102,7 +138,7 @@ const styles = StyleSheet.create({
   catogoryContainer: {
     marginTop: 50,
     padding: 10,
-    minHeight: 460,
+    minHeight: 480,
   },
 });
 

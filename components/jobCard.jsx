@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 
-const JobCard = ({ job, price, username }) => {
+const JobCard = ({ job, price, username, navigation }) => {
   return (
     <TouchableOpacity
       style={{
@@ -36,10 +36,11 @@ const JobCard = ({ job, price, username }) => {
       activeOpacity={0.8}
       onPress={() => {
         Vibration.vibrate(100);
-        Alert.alert(job, price + "     " + username, [
-          { text: "Book" },
-          { text: "Never mind" },
-        ]);
+        navigation.navigate("details", {
+          title: job,
+          price: price,
+          user: username,
+        });
       }}
     >
       <View>

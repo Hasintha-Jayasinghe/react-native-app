@@ -5,6 +5,7 @@ const profile = () => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text style={{ fontSize: 30 }}>Profile page</Text>
+      <Text style={{ fontSize: 30 }}>Profile page</Text>
     </View>
   );
 };
