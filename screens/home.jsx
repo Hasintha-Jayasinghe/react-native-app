@@ -65,6 +65,7 @@ const Screen = ({ navigation }) => {
             horizontal
             style={{ padding: 2 }}
             showsHorizontalScrollIndicator={false}
+            endFillColor="#ff724a"
           >
             {jobs.map((job, i) => (
               <JobCard

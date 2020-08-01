@@ -9,7 +9,9 @@ const JobDetails = ({ route, navigation }) => {
   return (
     <SafeAreaView>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>{title}</Text>
+        <Text style={styles.headerText} numberOfLines={1}>
+          {title}
+        </Text>
         <Text style={styles.priceText}>{price}</Text>
         <Text style={styles.userText}>{user}</Text>
       </View>
