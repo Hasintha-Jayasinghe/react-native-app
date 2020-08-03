@@ -6,10 +6,13 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  AsyncStorage,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import JobCard from "../components/jobCard";
 import RegisterScreen from "./registerService";
+
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 
 const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([
@@ -35,13 +38,23 @@ const Screen = ({ navigation }) => {
         style={{
           height: 180,
           backgroundColor: "#ff724a",
-          borderBottomLeftRadius: 60,
-          borderBottomRightRadius: 60,
+          borderBottomLeftRadius: 40,
+          borderBottomRightRadius: 40,
         }}
       >
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
           Profile
         </Text>
+        <View style={styles.logout}>
+          <TouchableOpacity
+            onPress={() => {
+              AsyncStorage.removeItem("user");
+              navigation.navigate("loggedOut");
+            }}
+          >
+            <MaterialCommunityIcons name="logout" size={34} color="white" />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.jobsContainer}>
         <Text style={{ padding: 5, fontSize: 25 }}>Services you offer:</Text>
@@ -69,10 +82,7 @@ const Screen = ({ navigation }) => {
           navigation.navigate("register-service");
         }}
       >
-        <Image
-          source={require("../assets/plus.png")}
-          style={styles.FloatingButtonStyle}
-        />
+        <AntDesign name="pluscircle" size={54} color="#ff724a" />
       </TouchableOpacity>
     </View>
   );
@@ -87,10 +97,11 @@ const profile = ({ navigation }) => {
         name="profile-home"
         component={Screen}
         options={{
-          header: () => null,
           headerStyle: {
             backgroundColor: "#ff724a",
           },
+          headerTitle: () => null,
+          header: () => null,
         }}
       />
       <Stack.Screen
@@ -134,15 +145,17 @@ const styles = StyleSheet.create({
   },
   TouchableOpacityStyle: {
     position: "absolute",
-    width: 60,
-    height: 60,
     alignItems: "center",
     justifyContent: "center",
     right: 5,
     bottom: -225,
-    backgroundColor: "#ff724a",
     padding: 5,
-    borderRadius: 50,
+  },
+  logout: {
+    flex: 1,
+    alignSelf: "flex-end",
+    margin: 15,
+    bottom: 60,
   },
 });
 

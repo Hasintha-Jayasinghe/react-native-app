@@ -1,64 +1,56 @@
-import React from "react";
-import { StyleSheet, Platform } from "react-native";
+import React, { useState, useContext } from "react";
+import { AsyncStorage } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "./screens/home";
-import profile from "./screens/profile";
-
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { createStackNavigator } from "@react-navigation/stack";
+import Prompt from "./screens/signupLogin";
+import Signup from "./screens/signup";
+import Tabs from "./apptabs";
+const Stack = createStackNavigator();
 
 const App = () => {
-  const Tab = createBottomTabNavigator();
+  const [user, setUser] = useState(null);
+  AsyncStorage.getItem("user").then((data) => {
+    if (data) {
+      setUser(data);
+    } else {
+      setUser(null);
+    }
+  });
 
-  return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="Home"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
+  if (user !== null) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={Tabs}
+            options={{ header: () => null }}
+          />
+          <Stack.Screen
+            name="loggedOut"
+            component={Prompt}
+            options={{ header: () => null }}
+          />
 
-            if (route.name === "Explore") {
-              iconName = focused
-                ? Platform.OS === "android"
-                  ? "md-compass"
-                  : "ios-compass"
-                : Platform.OS === "android"
-                ? "md-compass"
-                : "ios-compass";
-            } else if (route.name === "Profile") {
-              iconName = focused
-                ? Platform.OS === "android"
-                  ? "md-person"
-                  : "ios-person"
-                : Platform.OS === "android"
-                ? "md-person"
-                : "ios-person";
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: "#fc6b03",
-          inactiveTintColor: "gray",
-        }}
-      >
-        <Tab.Screen name="Explore" component={Home} />
-        <Tab.Screen name="Profile" component={profile} />
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
+          <Stack.Screen name="Signup" component={Signup} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Signup or login" component={Prompt} />
+          <Stack.Screen name="Signup" component={Signup} />
+          <Stack.Screen
+            name="Home"
+            component={Tabs}
+            options={{ header: () => null }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: Platform.OS === "android" ? 30 : 0,
-  },
-  header: {
-    fontSize: 20,
-  },
-});
 
 export default App;

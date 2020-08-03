@@ -10,8 +10,25 @@ const firebaseConfig = {
   appId: "1:261169843364:web:96b5c62c88ebb829162a31",
   measurementId: "G-002B3BYLFZ",
 };
-
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
-const storage = firebase.storage();
+
+export const registerUser = (
+  firstName,
+  lastName,
+  email,
+  username,
+  password
+) => {
+  const id = Math.random() * 50;
+  db.ref("users/" + parseInt(id.toString())).set({
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    username: username,
+    password: password,
+  });
+
+  return id;
+};

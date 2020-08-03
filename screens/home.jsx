@@ -118,7 +118,11 @@ const Home = () => {
         name="details"
         component={JobDetails}
         options={{
-          headerTitle: () => null,
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
+              Service
+            </Text>
+          ),
           headerStyle: {
             backgroundColor: "#ff724a",
           },
