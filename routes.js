@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import { AsyncStorage, Text, ActivityIndicator, View } from "react-native";
+import { Text, ActivityIndicator, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Prompt from "./screens/signupLogin";
@@ -11,22 +11,24 @@ const Stack = createStackNavigator();
 
 const Routes = () => {
   const [loading, setLoading] = useState(true);
-  const { usr } = useContext(userContext);
-
-  const { getUser } = useContext(userContext);
-
+  const { usr, getUser } = useContext(userContext);
   useEffect(() => {
     const user = getUser();
     if (user) {
-      setLoading(false);
+      // Need this because signup page shows before explore when logged in: Not very clear, I know
+      setTimeout(() => {
+        setLoading(false);
+      }, 450);
     } else {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 450);
     }
   }, []);
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={75} />
+        <ActivityIndicator size={75} color="#ff724a" />
       </View>
     );
   }

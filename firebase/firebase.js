@@ -33,16 +33,6 @@ export const registerUser = (
     username: username,
     password: password,
   });
-  checkUser();
 
   return id;
-};
-
-const checkUser = (username, email) => {
-  db.ref("users").once("value", (snapshot) => {
-    snapshot.forEach((id) => {
-      const username = id.child("username").val();
-      const email = id.child("email").val();
-    });
-  });
 };

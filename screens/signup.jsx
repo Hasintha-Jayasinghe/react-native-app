@@ -13,7 +13,7 @@ import { registerUser } from "../firebase/firebase";
 import userContext from "../userContext";
 
 const Signup = ({ navigation }) => {
-  const { login } = useContext(userContext);
+  const { login, usr } = useContext(userContext);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -133,11 +133,7 @@ const Signup = ({ navigation }) => {
                       username,
                       password
                     );
-                    if (id == "something") {
-                      Alert.alert("Error", "User already exists!");
-                    } else {
-                      login(parseInt(id.toString()));
-                    }
+                    login(parseInt(id).toString());
                   }
                 }}
               />

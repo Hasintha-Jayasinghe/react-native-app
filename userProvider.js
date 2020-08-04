@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AsyncStorage } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 
 import userContext from "./userContext";
 
@@ -7,22 +7,6 @@ const UserProvider = ({ children }) => {
   const [usr, setUsr] = useState(null);
 
   const user = {
-    getUser: () => {
-      AsyncStorage.getItem("user")
-        .then((data) => {
-          return data;
-        })
-        .then((val) => {
-          if (val) {
-            setUsr(val);
-          } else {
-            setUsr(null);
-          }
-        });
-
-      return usr;
-    },
-
     login: (user) => {
       AsyncStorage.setItem("user", user);
       setUsr(user);
@@ -31,6 +15,16 @@ const UserProvider = ({ children }) => {
     logout: () => {
       AsyncStorage.removeItem("user");
       setUsr(null);
+    },
+
+    getUser: async () => {
+      const user = await AsyncStorage.getItem("user");
+      if (user) {
+        await setUsr(user);
+      } else {
+        await setUsr(null);
+      }
+      return usr;
     },
 
     usr: usr,
