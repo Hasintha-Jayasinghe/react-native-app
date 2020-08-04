@@ -117,18 +117,27 @@ const Signup = ({ navigation }) => {
                 }}
                 textStyle={{ color: "#ff724a" }}
                 onPress={() => {
-                  const id = registerUser(
-                    firstName,
-                    lastName,
-                    email,
-                    username,
-                    password
-                  );
-                  alert(id);
-                  if (id == "something") {
-                    Alert.alert("Error", "User already exists!");
+                  if (
+                    firstName == "" ||
+                    lastName == "" ||
+                    email == "" ||
+                    username == "" ||
+                    password == ""
+                  ) {
+                    Alert.alert("Error", "All fields are required");
                   } else {
-                    login(parseInt(id).toString());
+                    const id = registerUser(
+                      firstName,
+                      lastName,
+                      email,
+                      username,
+                      password
+                    );
+                    if (id == "something") {
+                      Alert.alert("Error", "User already exists!");
+                    } else {
+                      login(parseInt(id.toString()));
+                    }
                   }
                 }}
               />

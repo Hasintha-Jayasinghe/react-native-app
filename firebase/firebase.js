@@ -24,12 +24,7 @@ export const registerUser = (
   username,
   password
 ) => {
-  let id = Math.random() * 50;
-  db.ref(`users/${parseInt(id.toString())}`).on("value", (snapshot) => {
-    if (snapshot.exists) {
-      id = Math.random() * 50;
-    }
-  });
+  const id = Math.random() * 50;
 
   db.ref("users/" + parseInt(id.toString())).set({
     firstName: firstName,
@@ -38,6 +33,16 @@ export const registerUser = (
     username: username,
     password: password,
   });
+  checkUser();
 
   return id;
+};
+
+const checkUser = (username, email) => {
+  db.ref("users").once("value", (snapshot) => {
+    snapshot.forEach((id) => {
+      const username = id.child("username").val();
+      const email = id.child("email").val();
+    });
+  });
 };
