@@ -10,7 +10,10 @@ const firebaseConfig = {
   appId: "1:261169843364:web:96b5c62c88ebb829162a31",
   measurementId: "G-002B3BYLFZ",
 };
-firebase.initializeApp(firebaseConfig);
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const db = firebase.database();
 
@@ -21,7 +24,13 @@ export const registerUser = (
   username,
   password
 ) => {
-  const id = Math.random() * 50;
+  let id = Math.random() * 50;
+  db.ref(`users/${parseInt(id.toString())}`).on("value", (snapshot) => {
+    if (snapshot.exists) {
+      id = Math.random() * 50;
+    }
+  });
+
   db.ref("users/" + parseInt(id.toString())).set({
     firstName: firstName,
     lastName: lastName,

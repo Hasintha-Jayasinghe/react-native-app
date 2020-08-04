@@ -17,7 +17,11 @@ import JobDetails from "./jobDetails";
 
 const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([
-    { job: "I will cut your grass", price: "RS 250", username: "Aron Young" },
+    {
+      job: "I will cut your grass",
+      price: "RS 250",
+      username: "Aron SOMETHING",
+    },
     { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
     { job: "I will babysit", price: "RS 500", username: "Aron Young" },
     { job: "I will be a friend", price: "RS 5000", username: "Aron Young" },

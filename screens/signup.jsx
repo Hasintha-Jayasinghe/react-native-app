@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
   TextInput,
   StyleSheet,
   ScrollView,
-  AsyncStorage,
+  Alert,
 } from "react-native";
 
 import FlatButton from "../components/buttons";
 import { registerUser } from "../firebase/firebase";
+import userContext from "../userContext";
 
 const Signup = ({ navigation }) => {
+  const { login } = useContext(userContext);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -122,8 +124,12 @@ const Signup = ({ navigation }) => {
                     username,
                     password
                   );
-                  AsyncStorage.setItem("user", id.toString());
-                  navigation.navigate("Home");
+                  alert(id);
+                  if (id == "something") {
+                    Alert.alert("Error", "User already exists!");
+                  } else {
+                    login(parseInt(id).toString());
+                  }
                 }}
               />
             </View>

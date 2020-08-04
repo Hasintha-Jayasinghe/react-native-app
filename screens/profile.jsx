@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,10 @@ import JobCard from "../components/jobCard";
 import RegisterScreen from "./registerService";
 
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import userContext from "../userContext";
 
 const Screen = ({ navigation }) => {
+  const { logout } = useContext(userContext);
   const [jobs, setJobs] = useState([
     { job: "I will cut your grass", price: "RS 250", username: "Aron Young" },
     { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
@@ -49,7 +51,7 @@ const Screen = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               AsyncStorage.removeItem("user");
-              navigation.navigate("loggedOut");
+              logout();
             }}
           >
             <MaterialCommunityIcons name="logout" size={34} color="white" />
