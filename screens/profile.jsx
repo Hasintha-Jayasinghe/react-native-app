@@ -140,11 +140,6 @@ const styles = StyleSheet.create({
     height: 350,
     width: "100%",
   },
-  FloatingButtonStyle: {
-    resizeMode: "contain",
-    width: 50,
-    height: 50,
-  },
   TouchableOpacityStyle: {
     position: "absolute",
     alignItems: "center",

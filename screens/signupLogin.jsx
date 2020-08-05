@@ -17,6 +17,9 @@ const Prompt = ({ navigation }) => {
               padding: 5,
               borderRadius: 10,
             }}
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
           >
             <AntDesign name="login" size={30} color="#ff724a" />
             <Text

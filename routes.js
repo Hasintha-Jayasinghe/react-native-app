@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Prompt from "./screens/signupLogin";
 import Signup from "./screens/signup";
+import Login from "./screens/login";
 import Tabs from "./apptabs";
 import userContext from "./userContext";
 
@@ -57,6 +58,17 @@ const Routes = () => {
             options={{
               headerTitle: () => (
                 <Text style={{ color: "white", fontSize: 20 }}>Sign up</Text>
+              ),
+              headerStyle: { backgroundColor: "#ff724a" },
+              headerTintColor: "white",
+            }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerTitle: () => (
+                <Text style={{ color: "white", fontSize: 20 }}>Login</Text>
               ),
               headerStyle: { backgroundColor: "#ff724a" },
               headerTintColor: "white",

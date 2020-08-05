@@ -7,6 +7,7 @@ import {
   StatusBar,
   Text,
   SafeAreaView,
+  RefreshControl,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -45,7 +46,6 @@ const Screen = ({ navigation }) => {
       ) : (
         <StatusBar barStyle="default" />
       )}
-
       <View
         style={{
           height: 280,
@@ -109,17 +109,20 @@ const Home = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="home-home"
+        name="Home"
         component={Screen}
         options={{
           header: () => null,
           headerStyle: {
             backgroundColor: "#ff724a",
           },
+          headerTitle: () => (
+            <Text style={{ color: "white", fontSize: 15 }}>Home</Text>
+          ),
         }}
       />
       <Stack.Screen
-        name="details"
+        name="Details"
         component={JobDetails}
         options={{
           headerTitle: () => (

@@ -17,6 +17,25 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
+const checkExists = (username, email) => {
+  let exists = false;
+  db.ref("users/").on("value", (snapshot) => {
+    for (let id in snapshot.val()) {
+      const cusername = snapshot.child(id + "/username").val();
+      const cemail = snapshot.child(id + "/email").val();
+
+      if (
+        cemail == email ||
+        cusername == username ||
+        (cemail == email && cusername == username)
+      ) {
+        exists = true;
+      }
+    }
+  });
+  return exists;
+};
+
 export const registerUser = (
   firstName,
   lastName,
@@ -24,15 +43,38 @@ export const registerUser = (
   username,
   password
 ) => {
-  const id = Math.random() * 50;
+  const exists = checkExists(username, email);
+  if (!exists) {
+    const id = Math.random() * 500;
 
-  db.ref("users/" + parseInt(id.toString())).set({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    username: username,
-    password: password,
+    db.ref("users/" + parseInt(id.toString())).set({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      username: username,
+      password: password,
+    });
+
+    return id;
+  } else {
+    return "Exists!";
+  }
+};
+
+export const loginUser = (username, password) => {
+  db.ref("users").on("value", (snapshot) => {
+    for (let id in snapshot.val()) {
+      const cusername = snapshot.child(id + "/username").val();
+      const cpassword = snapshot.child(id + "/password").val();
+
+      if (cusername == username) {
+        if (cpassword == password) {
+          window.uId = id.toString();
+        }
+      }
+    }
   });
-
-  return id;
+  let userId = window.uId;
+  window.uId = null;
+  return userId;
 };

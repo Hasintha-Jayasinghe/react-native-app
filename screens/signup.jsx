@@ -133,7 +133,11 @@ const Signup = ({ navigation }) => {
                       username,
                       password
                     );
-                    login(parseInt(id).toString());
+                    if (id.toString() != "Exists!") {
+                      login(parseInt(id).toString());
+                    } else {
+                      Alert.alert("Error", "Username or email taken!");
+                    }
                   }
                 }}
               />
