@@ -5,12 +5,12 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   AsyncStorage,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import JobCard from "../components/jobCard";
 import RegisterScreen from "./registerService";
+import Test from "./test";
 
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import userContext from "../userContext";
@@ -60,6 +60,7 @@ const Screen = ({ navigation }) => {
       </View>
       <View style={styles.jobsContainer}>
         <Text style={{ padding: 5, fontSize: 25 }}>Services you offer:</Text>
+        <Test name="Hello, this is" />
         <ScrollView
           horizontal
           style={{ padding: 2 }}
