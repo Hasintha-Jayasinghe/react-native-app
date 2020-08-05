@@ -7,7 +7,6 @@ import {
   StatusBar,
   Text,
   SafeAreaView,
-  RefreshControl,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
