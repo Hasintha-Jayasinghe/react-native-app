@@ -1,4 +1,5 @@
 import * as firebase from "firebase";
+const bcrypt = require("bcryptjs");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnojNH90gto2LJfBcVMQrsmIbqbSZoCp0",
@@ -16,6 +17,12 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.database();
+
+const genHash = (plaintext) => {
+  var salt = bcrypt.genSaltSync(10);
+  var hash = bcrypt.hashSync(plaintext, salt);
+  alert(hash);
+};
 
 const checkExists = (username, email) => {
   let exists = false;
@@ -43,6 +50,8 @@ export const registerUser = (
   username,
   password
 ) => {
+  const hashed = genHash(password);
+
   const exists = checkExists(username, email);
   if (!exists) {
     const id = Math.random() * 500;
