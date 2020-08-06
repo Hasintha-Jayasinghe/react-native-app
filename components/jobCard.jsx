@@ -96,7 +96,7 @@ const JobCard = ({ job, price, username, navigation, inProfile }) => {
         activeOpacity={0.8}
         onPress={() => {
           Vibration.vibrate(100);
-          navigation.navigate("details", {
+          navigation.navigate("Details", {
             title: job,
             price: price,
             user: username,

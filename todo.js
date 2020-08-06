@@ -1,4 +1,0 @@
-/*
- * Tips
- * Max one hour.
- */
