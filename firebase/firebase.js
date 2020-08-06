@@ -1,5 +1,5 @@
 import * as firebase from "firebase";
-const bcrypt = require("bcryptjs");
+const crypto = require("../crypto");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnojNH90gto2LJfBcVMQrsmIbqbSZoCp0",
@@ -18,10 +18,9 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
-const genHash = (plaintext) => {
-  var salt = bcrypt.genSaltSync(10);
-  var hash = bcrypt.hashSync(plaintext, salt);
-  alert(hash);
+const genHash = (password) => {
+  const hash = crypto.createHash("sha256").update(password).digest("hex");
+  return hash;
 };
 
 const checkExists = (username, email) => {
@@ -61,7 +60,7 @@ export const registerUser = (
       lastName: lastName,
       email: email,
       username: username,
-      password: password,
+      password: hashed,
     });
 
     return id;
@@ -74,10 +73,11 @@ export const loginUser = (username, password) => {
   db.ref("users").on("value", (snapshot) => {
     for (let id in snapshot.val()) {
       const cusername = snapshot.child(id + "/username").val();
-      const cpassword = snapshot.child(id + "/password").val();
+      const hashedPassword = snapshot.child(id + "/password").val();
+      const cpassword = genHash(password);
 
       if (cusername == username) {
-        if (cpassword == password) {
+        if (cpassword == hashedPassword) {
           window.uId = id.toString();
         }
       }

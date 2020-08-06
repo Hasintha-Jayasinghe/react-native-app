@@ -76,7 +76,7 @@ const Login = ({ navigation }) => {
                       login(user.toString());
                       window.uId = null;
                     } else {
-                      Alert.alert("Error", "User does not exist!");
+                      Alert.alert("Error", "Incorrect username or password!");
                     }
                   }
                 }}
