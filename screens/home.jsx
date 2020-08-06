@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   View,
@@ -14,29 +14,17 @@ import JobCard from "../components/jobCard";
 import CategoryCard from "../components/categoryCard";
 import CardCollection from "../components/categoryCollection";
 import JobDetails from "./jobDetails";
+import { getJobsWithLimit } from "../firebase/firebase";
+import { forModalPresentationIOS } from "@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators";
 
 const Screen = ({ navigation }) => {
-  const [jobs, setJobs] = useState([
-    {
-      job: "I will cut your grass",
-      price: "RS 250",
-      username: "Aron SOMETHING",
-    },
-    { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
-    { job: "I will babysit", price: "RS 500", username: "Aron Young" },
-    { job: "I will be a friend", price: "RS 5000", username: "Aron Young" },
-    {
-      job: "I will marry your daughter or son",
-      price: "RS 100000",
-      username: "Aron Young",
-    },
-    { job: "I will be your bff", price: "RS 1500", username: "Aron Young" },
-    {
-      job: "i will do anything for cash",
-      price: "RS 1500",
-      username: "Aron Young",
-    },
-  ]);
+  const [jobs, setJobs] = useState([]);
+  const [refreshing, setRefreshing] = useState(forModalPresentationIOS);
+
+  useEffect(() => {
+    const aJobs = getJobsWithLimit(10);
+    setJobs([...aJobs]);
+  }, []);
 
   return (
     <SafeAreaView>
@@ -45,43 +33,45 @@ const Screen = ({ navigation }) => {
       ) : (
         <StatusBar barStyle="default" />
       )}
-      <View
-        style={{
-          height: 280,
-          backgroundColor: "#ff724a",
-          borderBottomLeftRadius: 60,
-          borderBottomRightRadius: 60,
-        }}
-      >
-        <Text
+      <ScrollView>
+        <View
           style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            color: "white",
-            marginLeft: 10,
+            height: 280,
+            backgroundColor: "#ff724a",
+            borderBottomLeftRadius: 60,
+            borderBottomRightRadius: 60,
           }}
         >
-          Explore
-        </Text>
-        <View style={styles.jobsContainer}>
-          <ScrollView
-            horizontal
-            style={{ padding: 2 }}
-            showsHorizontalScrollIndicator={false}
-            endFillColor="#ff724a"
+          <Text
+            style={{
+              fontSize: 32,
+              fontWeight: "bold",
+              color: "white",
+              marginLeft: 10,
+            }}
           >
-            {jobs.map((job, i) => (
-              <JobCard
-                job={job.job}
-                price={job.price}
-                username={job.username}
-                key={i}
-                navigation={navigation}
-              />
-            ))}
-          </ScrollView>
+            Explore
+          </Text>
+          <View style={styles.jobsContainer}>
+            <ScrollView
+              horizontal
+              style={{ padding: 2 }}
+              showsHorizontalScrollIndicator={false}
+              endFillColor="#ff724a"
+            >
+              {jobs.map((job, i) => (
+                <JobCard
+                  job={job.job}
+                  price={job.price}
+                  username={job.username}
+                  key={i}
+                  navigation={navigation}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.catogoryContainer}>
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
           <CardCollection>

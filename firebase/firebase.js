@@ -87,3 +87,70 @@ export const loginUser = (username, password) => {
   window.uId = null;
   return userId;
 };
+
+export const registerJob = (
+  jobTitle,
+  jobPrice,
+  jobDes,
+  jobCatergory,
+  userId
+) => {
+  const id = Math.random() * 500;
+  db.ref("jobs/" + parseInt(id.toString())).set({
+    jobTitle: jobTitle,
+    jobPrice: jobPrice,
+    jobDes: jobDes,
+    userId: userId,
+    jobCatergory: jobCatergory,
+    rating: "0",
+  });
+};
+
+const getUserById = (userId) => {
+  db.ref("users/" + userId).on("value", (snapshot) => {
+    window.user = snapshot.child("username").val();
+  });
+
+  let user = window.user;
+  window.user = null;
+  return user;
+};
+
+export const getUserJobs = (userId) => {
+  const jobs = [];
+
+  db.ref("jobs").on("value", (snapshot) => {
+    for (let id in snapshot.val()) {
+      const cUserId = snapshot.child(id + "/userId").val();
+      if (userId == cUserId) {
+        const job = snapshot.child(id + "/jobTitle").val();
+        const price = snapshot.child(id + "/jobPrice").val();
+        const username = getUserById(snapshot.child(id + "/userId").val());
+        jobs.push({ job: job, price: price, username: username });
+      }
+    }
+  });
+
+  return jobs;
+};
+
+export const getJobsWithLimit = (limit) => {
+  const jobs = [];
+  let i = 0;
+
+  db.ref("jobs").on("value", (snapshot) => {
+    for (let id in snapshot.val()) {
+      if (i <= limit) {
+        const job = snapshot.child(id + "/jobTitle").val();
+        const price = snapshot.child(id + "/jobPrice").val();
+        const username = getUserById(snapshot.child(id + "/userId").val());
+        jobs.push({ job: job, price: price, username: username });
+        i++;
+      } else {
+        break;
+      }
+    }
+  });
+
+  return jobs;
+};

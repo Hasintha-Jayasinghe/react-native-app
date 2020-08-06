@@ -1,28 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, TextInput, Picker } from "react-native";
 import FlatButton from "../components/buttons";
+import { registerJob } from "../firebase/firebase";
+import userContext from "../userContext";
 
 const RegisterScreen = ({ navigation }) => {
-  const [selectedValue, setSelectedValue] = useState();
+  const [selectedValue, setSelectedValue] = useState("Gardening");
   const [serviceName, setServiceName] = useState("");
   const [servicePrice, setServicePrice] = useState("");
+  const [serviceDes, setServiceDes] = useState("");
+  const { usr } = useContext(userContext);
 
   return (
     <View style={{ padding: 5 }}>
       <Text style={{ fontSize: 20 }}>Service name:</Text>
       <TextInput
-        style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+        style={{
+          height: 35,
+          borderColor: "transparent",
+          borderBottomColor: "gray",
+          borderWidth: 1,
+        }}
         clearTextOnFocus={true}
         value={serviceName}
         onChangeText={(text) => setServiceName(text)}
       />
-      <Text style={{ fontSize: 20 }}>Service price (USD):</Text>
+      <Text style={{ fontSize: 20 }}>Service price:</Text>
       <TextInput
-        style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
+        style={{
+          height: 35,
+          borderColor: "transparent",
+          borderBottomColor: "gray",
+          borderWidth: 1,
+        }}
         clearTextOnFocus={true}
         keyboardType="number-pad"
         value={servicePrice}
         onChangeText={(text) => setServicePrice(text)}
+      />
+      <Text style={{ fontSize: 20 }}>Service Description</Text>
+      <TextInput
+        multiline={true}
+        numberOfLines={4}
+        value={serviceDes}
+        onChangeText={(text) => setServiceDes(text)}
+        style={{
+          borderColor: "transparent",
+          borderBottomColor: "gray",
+          borderWidth: 1,
+        }}
       />
       <Text style={{ fontSize: 20 }}>Service category:</Text>
       <Picker
@@ -43,12 +69,25 @@ const RegisterScreen = ({ navigation }) => {
           title="Register"
           style={{
             width: 140,
-            height: 60,
+            height: 55,
             backgroundColor: "#ff724a",
-            padding: 5,
+            padding: 2,
+            borderRadius: 10,
           }}
-          textStyle={{ color: "white", fontWeight: "bold", fontSize: 30 }}
+          textStyle={{
+            color: "white",
+            fontWeight: "bold",
+            fontSize: 25,
+            textAlign: "center",
+          }}
           onPress={() => {
+            registerJob(
+              serviceName,
+              servicePrice,
+              serviceDes,
+              selectedValue,
+              usr
+            );
             navigation.navigate("profile-home");
           }}
         />

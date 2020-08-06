@@ -1,11 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   AsyncStorage,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -14,26 +13,16 @@ import RegisterScreen from "./registerService";
 
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import userContext from "../userContext";
+import { getUserJobs } from "../firebase/firebase";
 
-const Screen = ({ navigation }) => {
-  const { logout } = useContext(userContext);
-  const [jobs, setJobs] = useState([
-    { job: "I will cut your grass", price: "RS 250", username: "Aron Young" },
-    { job: "I will clean your house", price: "RS 450", username: "Aron Young" },
-    { job: "I will babysit", price: "RS 500", username: "Aron Young" },
-    { job: "I will be a friend", price: "RS 5000", username: "Aron Young" },
-    {
-      job: "I will marry your daughter or son",
-      price: "RS 100000",
-      username: "Aron Young",
-    },
-    { job: "I will be your bff", price: "RS 1500", username: "Aron Young" },
-    {
-      job: "i will do anything for cash",
-      price: "RS 1500",
-      username: "Aron Young",
-    },
-  ]);
+const Screen = ({ navigation, route }) => {
+  const { logout, usr } = useContext(userContext);
+  const [jobs, setJobs] = useState([]);
+  useEffect(() => {
+    const uJobs = getUserJobs(usr);
+    setJobs([...uJobs]);
+  }, []);
+
   return (
     <View>
       <View
@@ -50,7 +39,6 @@ const Screen = ({ navigation }) => {
         <View style={styles.logout}>
           <TouchableOpacity
             onPress={() => {
-              AsyncStorage.removeItem("user");
               logout();
             }}
           >
@@ -102,7 +90,7 @@ const profile = ({ navigation }) => {
           headerStyle: {
             backgroundColor: "#ff724a",
           },
-          headerTitle: () => null,
+          headerTitle: () => <Text>Profile</Text>,
           header: () => null,
         }}
       />

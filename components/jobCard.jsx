@@ -6,6 +6,7 @@ import {
   Platform,
   Vibration,
   Alert,
+  StyleSheet,
 } from "react-native";
 
 const JobCard = ({ job, price, username, navigation, inProfile }) => {

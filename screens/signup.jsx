@@ -30,7 +30,8 @@ const Signup = ({ navigation }) => {
             <TextInput
               style={{
                 height: 30,
-                borderColor: "gray",
+                borderColor: "transparent",
+                borderBottomColor: "gray",
                 borderWidth: 1,
                 color: "#ff724a",
                 backgroundColor: "white",
@@ -45,7 +46,8 @@ const Signup = ({ navigation }) => {
             <TextInput
               style={{
                 height: 30,
-                borderColor: "gray",
+                borderColor: "transparent",
+                borderBottomColor: "gray",
                 borderWidth: 1,
                 color: "#ff724a",
                 backgroundColor: "white",
@@ -60,7 +62,8 @@ const Signup = ({ navigation }) => {
             <TextInput
               style={{
                 height: 30,
-                borderColor: "gray",
+                borderColor: "transparent",
+                borderBottomColor: "gray",
                 borderWidth: 1,
                 color: "#ff724a",
                 backgroundColor: "white",
@@ -76,7 +79,8 @@ const Signup = ({ navigation }) => {
             <TextInput
               style={{
                 height: 30,
-                borderColor: "gray",
+                borderColor: "transparent",
+                borderBottomColor: "gray",
                 borderWidth: 1,
                 color: "#ff724a",
                 backgroundColor: "white",
@@ -91,7 +95,8 @@ const Signup = ({ navigation }) => {
             <TextInput
               style={{
                 height: 30,
-                borderColor: "gray",
+                borderColor: "transparent",
+                borderBottomColor: "gray",
                 borderWidth: 1,
                 color: "#ff724a",
                 backgroundColor: "white",
