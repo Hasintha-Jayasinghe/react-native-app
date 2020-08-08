@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   ScrollView,
   View,
@@ -10,21 +10,22 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import JobCard from "../components/jobCard";
 import CategoryCard from "../components/categoryCard";
 import CardCollection from "../components/categoryCollection";
 import JobDetails from "./jobDetails";
 import { getJobs } from "../firebase/firebase";
+import userContext from "../userContext";
 
 const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { usr } = useContext(userContext);
 
   useEffect(() => {
     const aJobs = getJobs();
-    setJobs([...aJobs]);
+    setJobs([...aJobs].reverse());
 
     setTimeout(() => {
       setLoading(false);
@@ -50,7 +51,7 @@ const Screen = ({ navigation }) => {
               onRefresh={() => {
                 setRefreshing(true);
                 const aJobs = getJobs();
-                setJobs([...aJobs]);
+                setJobs([...aJobs].reverse());
 
                 setTimeout(() => {
                   setRefreshing(false);
@@ -83,17 +84,24 @@ const Screen = ({ navigation }) => {
                 style={{ padding: 2 }}
                 showsHorizontalScrollIndicator={false}
               >
-                {jobs.map((job, i) => (
-                  <JobCard
-                    job={job.job}
-                    price={job.price}
-                    username={job.username}
-                    key={i}
-                    navigation={navigation}
-                    id={job.id}
-                    image={job.image}
-                  />
-                ))}
+                {jobs.map((job, i) => {
+                  if (job.userId != usr) {
+                    return (
+                      <JobCard
+                        job={job.job}
+                        price={job.price}
+                        username={job.username}
+                        key={i}
+                        navigation={navigation}
+                        id={job.id}
+                        image={job.image}
+                        userId={job.userId}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
               </ScrollView>
             </View>
           </View>

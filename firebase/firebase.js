@@ -62,6 +62,7 @@ export const registerUser = (
       email: email,
       username: username,
       password: hashed,
+      balance: 100,
     });
 
     return id;
@@ -93,9 +94,9 @@ const uploadImage = async (imageUri, jobTitle, userId) => {
   const path = "jobs/images/" + userId + "/" + jobTitle + "/image.jpg";
   const response = await fetch(imageUri);
   const blob = await response.blob();
-  storage.ref(path).put(blob);
+  await storage.ref(path).put(blob);
 
-  storage
+  await storage
     .ref(path)
     .getDownloadURL()
     .then((data) => {
@@ -106,7 +107,7 @@ const uploadImage = async (imageUri, jobTitle, userId) => {
   return url;
 };
 
-export const registerJob = (
+export const registerJob = async (
   jobTitle,
   jobPrice,
   jobDes,
@@ -114,10 +115,7 @@ export const registerJob = (
   userId,
   imageUri
 ) => {
-  const image = uploadImage(imageUri);
-  image.then((data) => {
-    window.imageUrl = data;
-  });
+  const image = await uploadImage(imageUri);
 
   const id = Math.random() * 500;
   db.ref("jobs/" + parseInt(id.toString())).set({
@@ -127,7 +125,7 @@ export const registerJob = (
     userId: userId,
     jobCatergory: jobCatergory,
     rating: "0",
-    image: window.imageUrl,
+    image: image,
   });
 };
 
@@ -174,6 +172,7 @@ export const getJobs = () => {
       const job = snapshot.child(id + "/jobTitle").val();
       const price = snapshot.child(id + "/jobPrice").val();
       const username = getUserById(snapshot.child(id + "/userId").val());
+      const userId = snapshot.child(id + "/userId").val();
       const image = snapshot.child(id + "/image").val();
 
       jobs.push({
@@ -182,6 +181,7 @@ export const getJobs = () => {
         username: username,
         id: id,
         image: image,
+        userId: userId,
       });
     }
   });
@@ -202,4 +202,26 @@ export const getJobDes = (jobId) => {
 export const deleteJob = (jobId) => {
   const userRef = db.ref("jobs/" + jobId);
   userRef.remove();
+};
+
+// * All Needed To Hire
+export const processIncome = (userId, amount) => {
+  db.ref("users/" + userId + "/balance").on("value", (snapshot) => {
+    window.newBalance = parseInt(snapshot.val()) + parseInt(amount);
+  });
+  const newBalance = window.newBalance;
+  window.newBalance = null;
+
+  db.ref("users/" + userId).update({ balance: newBalance });
+};
+
+export const getBalance = (userId) => {
+  db.ref("users/" + userId.toString()).on("value", (snapshot) => {
+    window.currentBalance = snapshot.child("balance").val();
+  });
+
+  const current = window.currentBalance;
+  window.currentBalance = null;
+
+  return current;
 };

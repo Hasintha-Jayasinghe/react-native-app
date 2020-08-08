@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,18 +7,24 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  Alert,
 } from "react-native";
 import FlatButton from "../components/buttons";
-import { getJobDes } from "../firebase/firebase";
+import { getJobDes, getBalance, processIncome } from "../firebase/firebase";
+import userContext from "../userContext";
 
 const JobDetails = ({ route, navigation }) => {
+  const { usr } = useContext(userContext);
   const { title } = route.params;
   const { price } = route.params;
   const { user } = route.params;
   const { id } = route.params;
   const { image } = route.params;
+  const { userId } = route.params;
   const [des, setDes] = useState("");
   const [refreshing, setRefreshing] = useState(false);
+  const [book, setBook] = useState("Book");
+  const [booked, setBooked] = useState(false);
 
   useEffect(() => {
     const d = getJobDes(id);
@@ -50,14 +56,44 @@ const JobDetails = ({ route, navigation }) => {
         </View>
         <View style={styles.buttons}>
           <FlatButton
-            title="Book"
+            title={book}
             textStyle={{ color: "#ff724a", fontSize: 20 }}
-            style={styles.button}
+            style={[styles.button, { textAlign: "center" }]}
+            onPress={() => {
+              if (!booked) {
+                const currentBalance = getBalance(usr);
+                const servicePrice = parseInt(price);
+                if (currentBalance < servicePrice) {
+                  Alert.alert(
+                    "Error",
+                    "You don't have enough junior bucks to buy this service"
+                  );
+                } else {
+                  Alert.alert(
+                    "Info",
+                    "Are you sure you want this user to see your email and other personal data? You can't undo this action",
+                    [
+                      { text: "No" },
+                      {
+                        text: "Yes",
+                        onPress: () => {
+                          processIncome(userId, servicePrice);
+                          setBook("Booked");
+                          setBooked(true);
+                        },
+                      },
+                    ]
+                  );
+                }
+              } else {
+                Alert.alert("Info", "You can't undo this action now!");
+              }
+            }}
           />
           <FlatButton
             title="Review"
             textStyle={{ color: "#ff724a", fontSize: 20, textAlign: "center" }}
-            style={[styles.button, { marginLeft: 220, width: 100 }]}
+            style={[styles.button, { width: 100, right: -190 }]}
           />
         </View>
         <View>
@@ -112,7 +148,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "white",
-    width: 60,
+    width: 90,
     height: 40,
     padding: 5,
     borderRadius: 5,

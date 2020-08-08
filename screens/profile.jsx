@@ -19,18 +19,20 @@ import {
   Foundation,
 } from "@expo/vector-icons";
 import userContext from "../userContext";
-import { getUserJobs, deleteJob } from "../firebase/firebase";
+import { getUserJobs, deleteJob, getBalance } from "../firebase/firebase";
 import { TabRouter } from "@react-navigation/native";
 
 const Screen = ({ navigation }) => {
   const { logout, usr } = useContext(userContext);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newData, setNewData] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const uJobs = getUserJobs(usr);
     setJobs([...uJobs]);
+    const cB = getBalance(usr);
+    setBalance(cB);
     setLoading(false);
   }, []);
 
@@ -40,14 +42,6 @@ const Screen = ({ navigation }) => {
         <ActivityIndicator color="#ff724a" size={75} />
       </View>
     );
-  }
-
-  if (newData) {
-    setLoading(true);
-    const uJobs = getUserJobs(usr);
-    setJobs([...uJobs]);
-    setLoading(false);
-    setNewData(false);
   }
   if (jobs.length != 0) {
     return (
@@ -93,7 +87,7 @@ const Screen = ({ navigation }) => {
             style={{ padding: 2 }}
             showsHorizontalScrollIndicator={false}
           >
-            {jobs.map((job, i) => (
+            {jobs.reverse().map((job, i) => (
               <JobCard
                 job={job.job}
                 price={job.price}
@@ -127,7 +121,6 @@ const Screen = ({ navigation }) => {
           activeOpacity={0.7}
           style={styles.TouchableOpacityStyle}
           onPress={() => {
-            setNewData(true);
             navigation.navigate("register-service");
           }}
         >
@@ -163,6 +156,7 @@ const Screen = ({ navigation }) => {
             >
               <Foundation name="refresh" size={34} color="white" />
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => {
                 logout();
@@ -171,6 +165,17 @@ const Screen = ({ navigation }) => {
               <MaterialCommunityIcons name="logout" size={34} color="white" />
             </TouchableOpacity>
           </View>
+          <Text
+            style={{
+              color: "white",
+              fontWeight: "bold",
+              fontSize: 15,
+              bottom: 75,
+              right: -5,
+            }}
+          >
+            {balance} junior bucks remaining
+          </Text>
         </View>
         <View style={styles.jobsContainer}>
           <Text style={{ padding: 5, fontSize: 25 }}>Services you offer:</Text>
@@ -182,7 +187,6 @@ const Screen = ({ navigation }) => {
           activeOpacity={0.7}
           style={styles.TouchableOpacityStyle}
           onPress={() => {
-            setNewData(true);
             navigation.navigate("register-service");
           }}
         >

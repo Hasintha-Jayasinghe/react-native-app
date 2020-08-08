@@ -19,6 +19,7 @@ const JobCard = ({
   id,
   image,
   onLongPress,
+  userId,
 }) => {
   if (inProfile) {
     return (
@@ -120,6 +121,7 @@ const JobCard = ({
             user: username,
             id: id,
             image: image,
+            userId: userId,
           });
         }}
       >

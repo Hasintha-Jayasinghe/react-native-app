@@ -85,14 +85,34 @@ const RegisterScreen = ({ navigation }) => {
           textAlign: "center",
         }}
         onPress={async () => {
-          ImagePicker.requestCameraPermissionsAsync();
-          ImagePicker.requestCameraRollPermissionsAsync();
-          const image = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: "Images",
-          });
-          if (!image.cancelled) {
-            setImageUri(image.uri);
-          }
+          Alert.alert("Which method?", "Choose a picture source", [
+            {
+              text: "Gallery",
+              onPress: async () => {
+                ImagePicker.requestCameraPermissionsAsync();
+                ImagePicker.requestCameraRollPermissionsAsync();
+                const image = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: "Images",
+                });
+                if (!image.cancelled) {
+                  setImageUri(image.uri);
+                }
+              },
+            },
+            {
+              text: "Camera",
+              onPress: async () => {
+                ImagePicker.requestCameraPermissionsAsync();
+                ImagePicker.requestCameraRollPermissionsAsync();
+                const image = await ImagePicker.launchCameraAsync({
+                  mediaTypes: "Images",
+                });
+                if (!image.cancelled) {
+                  setImageUri(image.uri);
+                }
+              },
+            },
+          ]);
         }}
       />
 
@@ -114,19 +134,28 @@ const RegisterScreen = ({ navigation }) => {
           }}
           onPress={() => {
             // ! Change the value later before deployment!
-
-            if (serviceDes.split(" ").length >= 5) {
-              registerJob(
-                serviceName,
-                servicePrice,
-                serviceDes,
-                selectedValue,
-                usr,
-                imageUri
-              );
-              navigation.navigate("profile-home");
+            if (serviceName == "") {
+              Alert.alert("Error!", "All Fields are requred");
+            } else if (servicePrice == "") {
+              Alert.alert("Error!", "All Fields are requred");
+            } else if (serviceDes == "") {
+              Alert.alert("Error!", "All Fields are requred");
+            } else if (imageUri == "") {
+              Alert.alert("Error!", "All Fields are requred");
             } else {
-              Alert.alert("Error!", "Min number of words is 140!");
+              if (serviceDes.split(" ").length >= 140) {
+                registerJob(
+                  serviceName,
+                  servicePrice,
+                  serviceDes,
+                  selectedValue,
+                  usr,
+                  imageUri
+                );
+                navigation.replace("profile-home");
+              } else {
+                Alert.alert("Error!", "Min number of words is 140!");
+              }
             }
           }}
         />
