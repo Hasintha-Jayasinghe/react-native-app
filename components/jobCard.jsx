@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TouchableOpacity,
   Text,
   View,
   Platform,
   Vibration,
+  Image,
   Alert,
-  StyleSheet,
 } from "react-native";
+import { Feather } from "@expo/vector-icons";
 
-const JobCard = ({ job, price, username, navigation, inProfile }) => {
+const JobCard = ({
+  job,
+  price,
+  username,
+  navigation,
+  inProfile,
+  id,
+  image,
+  onLongPress,
+}) => {
   if (inProfile) {
     return (
       <TouchableOpacity
@@ -35,9 +45,13 @@ const JobCard = ({ job, price, username, navigation, inProfile }) => {
           maxHeight: 200,
           backgroundColor: "#20e648",
         }}
-        activeOpacity={0.8}
+        activeOpacity={1}
+        onLongPress={onLongPress}
       >
-        <View>
+        <TouchableOpacity style={{ right: -160 }}>
+          <Feather name="more-vertical" size={24} color="white" />
+        </TouchableOpacity>
+        <View style={{ bottom: 20 }}>
           <Text
             style={{
               fontSize: 17,
@@ -66,6 +80,9 @@ const JobCard = ({ job, price, username, navigation, inProfile }) => {
           >
             {price}
           </Text>
+        </View>
+        <View style={{ bottom: 55 }}>
+          <Image source={{ height: 115, width: 175, uri: image }} />
         </View>
       </TouchableOpacity>
     );
@@ -101,6 +118,8 @@ const JobCard = ({ job, price, username, navigation, inProfile }) => {
             title: job,
             price: price,
             user: username,
+            id: id,
+            image: image,
           });
         }}
       >
@@ -133,6 +152,9 @@ const JobCard = ({ job, price, username, navigation, inProfile }) => {
           >
             {price}
           </Text>
+        </View>
+        <View style={{ bottom: 35 }}>
+          <Image source={{ height: 115, width: 175, uri: image }} />
         </View>
       </TouchableOpacity>
     );

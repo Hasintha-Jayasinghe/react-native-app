@@ -41,9 +41,6 @@ const Tabs = () => {
         activeTintColor: "#fc6b03",
         inactiveTintColor: "gray",
         keyboardHidesTabBar: true,
-        style: {
-          position: "absolute",
-        },
       }}
     >
       <Tab.Screen

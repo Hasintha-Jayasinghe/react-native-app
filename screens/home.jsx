@@ -4,9 +4,10 @@ import {
   View,
   StyleSheet,
   Platform,
-  StatusBar,
   Text,
   SafeAreaView,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -14,82 +15,174 @@ import JobCard from "../components/jobCard";
 import CategoryCard from "../components/categoryCard";
 import CardCollection from "../components/categoryCollection";
 import JobDetails from "./jobDetails";
-import { getJobsWithLimit } from "../firebase/firebase";
-import { forModalPresentationIOS } from "@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators";
+import { getJobs } from "../firebase/firebase";
 
 const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([]);
-  const [refreshing, setRefreshing] = useState(forModalPresentationIOS);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const aJobs = getJobsWithLimit(10);
+    const aJobs = getJobs();
     setJobs([...aJobs]);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
   }, []);
 
-  return (
-    <SafeAreaView>
-      {Platform.OS === "android" ? (
-        <StatusBar backgroundColor="#ff724a" />
-      ) : (
-        <StatusBar barStyle="default" />
-      )}
-      <ScrollView>
-        <View
-          style={{
-            height: 280,
-            backgroundColor: "#ff724a",
-            borderBottomLeftRadius: 60,
-            borderBottomRightRadius: 60,
-          }}
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator color="#ff724a" size={75} />
+      </View>
+    );
+  }
+  if (jobs.length != 0) {
+    return (
+      <SafeAreaView>
+        <ScrollView
+          style={{ backgroundColor: "#fff", position: "relative" }}
+          refreshControl={
+            <RefreshControl
+              colors={["#ff724a", "#ff742a"]}
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                const aJobs = getJobs();
+                setJobs([...aJobs]);
+
+                setTimeout(() => {
+                  setRefreshing(false);
+                }, 150);
+              }}
+            />
+          }
         >
-          <Text
+          <View
             style={{
-              fontSize: 32,
-              fontWeight: "bold",
-              color: "white",
-              marginLeft: 10,
+              height: 280,
+              backgroundColor: "#ff724a",
+              borderBottomLeftRadius: 60,
+              borderBottomRightRadius: 60,
             }}
           >
-            Explore
-          </Text>
-          <View style={styles.jobsContainer}>
-            <ScrollView
-              horizontal
-              style={{ padding: 2 }}
-              showsHorizontalScrollIndicator={false}
-              endFillColor="#ff724a"
+            <Text
+              style={{
+                fontSize: 32,
+                fontWeight: "bold",
+                color: "white",
+                marginLeft: 10,
+              }}
             >
-              {jobs.map((job, i) => (
-                <JobCard
-                  job={job.job}
-                  price={job.price}
-                  username={job.username}
-                  key={i}
-                  navigation={navigation}
-                />
-              ))}
-            </ScrollView>
+              Explore
+            </Text>
+            <View style={styles.jobsContainer}>
+              <ScrollView
+                horizontal
+                style={{ padding: 2 }}
+                showsHorizontalScrollIndicator={false}
+              >
+                {jobs.map((job, i) => (
+                  <JobCard
+                    job={job.job}
+                    price={job.price}
+                    username={job.username}
+                    key={i}
+                    navigation={navigation}
+                    id={job.id}
+                    image={job.image}
+                  />
+                ))}
+              </ScrollView>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-      <View style={styles.catogoryContainer}>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <CardCollection>
-            <CategoryCard name="Gardening" icon="flower" />
-            <CategoryCard name="Lifestyle" icon="spa" />
-          </CardCollection>
-          <CardCollection>
-            <CategoryCard name="Services" icon="cogs" />
-            <CategoryCard name="Entertainment" icon="drama-masks" />
-          </CardCollection>
-          <CardCollection>
-            <CategoryCard name="Education" icon="book-open" />
-            <CategoryCard name="Physical Activities" icon="badminton" />
-          </CardCollection>
+          <View style={styles.catogoryContainer}>
+            <CardCollection>
+              <CategoryCard name="Gardening" icon="flower" />
+              <CategoryCard name="Lifestyle" icon="spa" />
+            </CardCollection>
+            <CardCollection>
+              <CategoryCard name="Services" icon="cogs" />
+              <CategoryCard name="Entertainment" icon="drama-masks" />
+            </CardCollection>
+            <CardCollection>
+              <CategoryCard name="Education" icon="book-open" />
+              <CategoryCard name="Physical Activities" icon="badminton" />
+            </CardCollection>
+          </View>
         </ScrollView>
-      </View>
-    </SafeAreaView>
-  );
+      </SafeAreaView>
+    );
+  } else {
+    return (
+      <SafeAreaView>
+        <ScrollView
+          style={{ backgroundColor: "#fff", position: "relative" }}
+          refreshControl={
+            <RefreshControl
+              colors={["#ff724a", "#ff742a"]}
+              refreshing={refreshing}
+              onRefresh={() => {
+                setRefreshing(true);
+                const aJobs = getJobs();
+                setJobs([...aJobs]);
+
+                setTimeout(() => {
+                  setRefreshing(false);
+                }, 150);
+              }}
+            />
+          }
+        >
+          <View
+            style={{
+              height: 280,
+              backgroundColor: "#ff724a",
+              borderBottomLeftRadius: 60,
+              borderBottomRightRadius: 60,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 32,
+                fontWeight: "bold",
+                color: "white",
+                marginLeft: 10,
+              }}
+            >
+              Explore
+            </Text>
+            <View style={styles.jobsContainer}>
+              <ScrollView
+                horizontal
+                style={{ padding: 2 }}
+                showsHorizontalScrollIndicator={false}
+              >
+                <Text style={{ color: "white", fontSize: 20, marginLeft: 10 }}>
+                  No Jobs Yet. Pull down to refresh
+                </Text>
+              </ScrollView>
+            </View>
+          </View>
+          <View style={styles.catogoryContainer}>
+            <CardCollection>
+              <CategoryCard name="Gardening" icon="flower" />
+              <CategoryCard name="Lifestyle" icon="spa" />
+            </CardCollection>
+            <CardCollection>
+              <CategoryCard name="Services" icon="cogs" />
+              <CategoryCard name="Entertainment" icon="drama-masks" />
+            </CardCollection>
+            <CardCollection>
+              <CategoryCard name="Education" icon="book-open" />
+              <CategoryCard name="Physical Activities" icon="badminton" />
+            </CardCollection>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 };
 
 const Home = () => {

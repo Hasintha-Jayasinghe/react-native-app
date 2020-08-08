@@ -17,6 +17,7 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.database();
+const storage = firebase.storage();
 
 const genHash = (password) => {
   const hash = crypto.createHash("sha256").update(password).digest("hex");
@@ -88,13 +89,36 @@ export const loginUser = (username, password) => {
   return userId;
 };
 
+const uploadImage = async (imageUri, jobTitle, userId) => {
+  const path = "jobs/images/" + userId + "/" + jobTitle + "/image.jpg";
+  const response = await fetch(imageUri);
+  const blob = await response.blob();
+  storage.ref(path).put(blob);
+
+  storage
+    .ref(path)
+    .getDownloadURL()
+    .then((data) => {
+      window.url = data;
+    });
+  const url = window.url;
+  window.url = null;
+  return url;
+};
+
 export const registerJob = (
   jobTitle,
   jobPrice,
   jobDes,
   jobCatergory,
-  userId
+  userId,
+  imageUri
 ) => {
+  const image = uploadImage(imageUri);
+  image.then((data) => {
+    window.imageUrl = data;
+  });
+
   const id = Math.random() * 500;
   db.ref("jobs/" + parseInt(id.toString())).set({
     jobTitle: jobTitle,
@@ -103,6 +127,7 @@ export const registerJob = (
     userId: userId,
     jobCatergory: jobCatergory,
     rating: "0",
+    image: window.imageUrl,
   });
 };
 
@@ -126,7 +151,14 @@ export const getUserJobs = (userId) => {
         const job = snapshot.child(id + "/jobTitle").val();
         const price = snapshot.child(id + "/jobPrice").val();
         const username = getUserById(snapshot.child(id + "/userId").val());
-        jobs.push({ job: job, price: price, username: username });
+        const image = snapshot.child(id + "/image").val();
+        jobs.push({
+          job: job,
+          price: price,
+          username: username,
+          image: image,
+          id: id,
+        });
       }
     }
   });
@@ -134,23 +166,40 @@ export const getUserJobs = (userId) => {
   return jobs;
 };
 
-export const getJobsWithLimit = (limit) => {
+export const getJobs = () => {
   const jobs = [];
-  let i = 0;
 
   db.ref("jobs").on("value", (snapshot) => {
     for (let id in snapshot.val()) {
-      if (i <= limit) {
-        const job = snapshot.child(id + "/jobTitle").val();
-        const price = snapshot.child(id + "/jobPrice").val();
-        const username = getUserById(snapshot.child(id + "/userId").val());
-        jobs.push({ job: job, price: price, username: username });
-        i++;
-      } else {
-        break;
-      }
+      const job = snapshot.child(id + "/jobTitle").val();
+      const price = snapshot.child(id + "/jobPrice").val();
+      const username = getUserById(snapshot.child(id + "/userId").val());
+      const image = snapshot.child(id + "/image").val();
+
+      jobs.push({
+        job: job,
+        price: price,
+        username: username,
+        id: id,
+        image: image,
+      });
     }
   });
-
   return jobs;
+};
+
+export const getJobDes = (jobId) => {
+  db.ref("jobs/" + jobId).on("value", (snapshot) => {
+    window.des = snapshot.child("jobDes").val();
+  });
+
+  const des = window.des;
+  window.des = null;
+
+  return des;
+};
+
+export const deleteJob = (jobId) => {
+  const userRef = db.ref("jobs/" + jobId);
+  userRef.remove();
 };
