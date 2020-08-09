@@ -77,7 +77,7 @@ const JobDetails = ({ route, navigation }) => {
                       {
                         text: "Yes",
                         onPress: () => {
-                          processIncome(userId, servicePrice);
+                          processIncome(userId, servicePrice, usr);
                           setBook("Booked");
                           setBooked(true);
                         },

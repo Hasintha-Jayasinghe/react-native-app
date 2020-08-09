@@ -28,18 +28,16 @@ const checkExists = (username, email) => {
   let exists = false;
   db.ref("users/").on("value", (snapshot) => {
     for (let id in snapshot.val()) {
-      const cusername = snapshot.child(id + "/username").val();
-      const cemail = snapshot.child(id + "/email").val();
-
-      if (
-        cemail == email ||
-        cusername == username ||
-        (cemail == email && cusername == username)
-      ) {
-        exists = true;
+      const cUsername = snapshot.child(id + "/username").val();
+      const cEmail = snapshot.child(id + "/email").val();
+      if (cUsername == username || cEmail == email) {
+        window.userExists = true;
       }
     }
   });
+  exists = window.userExists;
+  window.userExists = null;
+
   return exists;
 };
 
@@ -205,14 +203,20 @@ export const deleteJob = (jobId) => {
 };
 
 // * All Needed To Hire
-export const processIncome = (userId, amount) => {
+export const processIncome = (userId, amount, buyerId) => {
   db.ref("users/" + userId + "/balance").on("value", (snapshot) => {
     window.newBalance = parseInt(snapshot.val()) + parseInt(amount);
   });
+  db.ref("users/" + buyerId + "/balance").on("value", (snapshot) => {
+    window.newBuyerBalance = parseInt(snapshot.val()) - amount;
+  });
   const newBalance = window.newBalance;
   window.newBalance = null;
+  const newBuyerBalance = window.newBuyerBalance;
+  window.newBuyerBalance = null;
 
   db.ref("users/" + userId).update({ balance: newBalance });
+  db.ref("users/" + buyerId).update({ balance: newBuyerBalance });
 };
 
 export const getBalance = (userId) => {

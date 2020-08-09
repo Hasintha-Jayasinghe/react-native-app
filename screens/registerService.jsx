@@ -1,5 +1,12 @@
 import React, { useState, useContext } from "react";
-import { View, Text, TextInput, Picker, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Picker,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import FlatButton from "../components/buttons";
 import { registerJob } from "../firebase/firebase";
 import userContext from "../userContext";
@@ -11,8 +18,18 @@ const RegisterScreen = ({ navigation }) => {
   const [servicePrice, setServicePrice] = useState("");
   const [serviceDes, setServiceDes] = useState("");
   const [imageUri, setImageUri] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { usr } = useContext(userContext);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator color="#ff724a" size={75} />
+        <Text>Uploading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ padding: 5 }}>
@@ -132,7 +149,7 @@ const RegisterScreen = ({ navigation }) => {
             fontSize: 25,
             textAlign: "center",
           }}
-          onPress={() => {
+          onPress={async () => {
             // ! Change the value later before deployment!
             if (serviceName == "") {
               Alert.alert("Error!", "All Fields are requred");
@@ -144,7 +161,8 @@ const RegisterScreen = ({ navigation }) => {
               Alert.alert("Error!", "All Fields are requred");
             } else {
               if (serviceDes.split(" ").length >= 140) {
-                registerJob(
+                setLoading(true);
+                await registerJob(
                   serviceName,
                   servicePrice,
                   serviceDes,
@@ -152,6 +170,7 @@ const RegisterScreen = ({ navigation }) => {
                   usr,
                   imageUri
                 );
+                setLoading(false);
                 navigation.replace("profile-home");
               } else {
                 Alert.alert("Error!", "Min number of words is 140!");

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import JobCard from "../components/jobCard";
@@ -27,6 +28,7 @@ const Screen = ({ navigation }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const uJobs = getUserJobs(usr);
@@ -45,154 +47,188 @@ const Screen = ({ navigation }) => {
   }
   if (jobs.length != 0) {
     return (
-      <View>
-        <View
-          style={{
-            height: 180,
-            backgroundColor: "#ff724a",
-            borderBottomLeftRadius: 40,
-            borderBottomRightRadius: 40,
-          }}
-        >
-          <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
-            Profile
-          </Text>
-          <View style={styles.logout}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                const uJobs = getUserJobs(usr);
-                setJobs([...uJobs]);
-                setTimeout(() => {
-                  setLoading(false);
-                }, 250);
+      <ScrollView
+        style={{ flex: 1, backgroundColor: "#fff" }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            colors={["#ff724a"]}
+            onRefresh={() => {
+              const uJobs = getUserJobs(usr);
+              setJobs([...uJobs]);
+              const cB = getBalance(usr);
+              setBalance(cB);
+              setLoading(false);
+            }}
+          />
+        }
+      >
+        <View>
+          <View
+            style={{
+              height: 180,
+              backgroundColor: "#ff724a",
+              borderBottomLeftRadius: 40,
+              borderBottomRightRadius: 40,
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
+              Profile
+            </Text>
+            <View style={styles.logout}>
+              <TouchableOpacity
+                onPress={() => {
+                  logout();
+                }}
+              >
+                <MaterialCommunityIcons name="logout" size={34} color="white" />
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 15,
+                bottom: 15,
+                right: -5,
               }}
-              style={{ marginRight: 10 }}
             >
-              <Foundation name="refresh" size={34} color="white" />
-            </TouchableOpacity>
+              {balance} junior bucks remaining
+            </Text>
             <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                bottom: -20,
+                left: 179,
+                backgroundColor: "white",
+                width: 54,
+                borderRadius: 40,
+              }}
               onPress={() => {
-                logout();
+                navigation.navigate("register-service");
               }}
             >
-              <MaterialCommunityIcons name="logout" size={34} color="white" />
+              <AntDesign name="pluscircle" size={54} color="#20e648" />
             </TouchableOpacity>
           </View>
-        </View>
-        <View style={styles.jobsContainer}>
-          <Text style={{ padding: 5, fontSize: 25 }}>Services you offer:</Text>
-          <ScrollView
-            horizontal
-            style={{ padding: 2 }}
-            showsHorizontalScrollIndicator={false}
-          >
-            {jobs.reverse().map((job, i) => (
-              <JobCard
-                job={job.job}
-                price={job.price}
-                username={job.username}
-                key={i}
-                navigation={navigation}
-                inProfile={true}
-                image={job.image}
-                id={job.id}
-                onLongPress={() => {
-                  Alert.alert("Delete", "Do you want to remove this job?", [
-                    {
-                      text: "No",
-                    },
-                    {
-                      text: "Delete",
-                      onPress: () => {
-                        deleteJob(job.id);
-                        const uJobs = getUserJobs(usr);
-                        setJobs([...uJobs]);
-                        setLoading(false);
+          <View style={styles.jobsContainer}>
+            <Text style={{ padding: 5, fontSize: 25 }}>
+              Services you offer:
+            </Text>
+            <ScrollView
+              horizontal
+              style={{ padding: 2 }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {jobs.reverse().map((job, i) => (
+                <JobCard
+                  job={job.job}
+                  price={job.price}
+                  username={job.username}
+                  key={i}
+                  navigation={navigation}
+                  inProfile={true}
+                  image={job.image}
+                  id={job.id}
+                  onLongPress={() => {
+                    Alert.alert("Delete", "Do you want to remove this job?", [
+                      {
+                        text: "No",
                       },
-                    },
-                  ]);
-                }}
-              />
-            ))}
-          </ScrollView>
+                      {
+                        text: "Delete",
+                        onPress: () => {
+                          deleteJob(job.id);
+                          const uJobs = getUserJobs(usr);
+                          setJobs([...uJobs]);
+                          setLoading(false);
+                        },
+                      },
+                    ]);
+                  }}
+                />
+              ))}
+            </ScrollView>
+          </View>
         </View>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.TouchableOpacityStyle}
-          onPress={() => {
-            navigation.navigate("register-service");
-          }}
-        >
-          <AntDesign name="pluscircle" size={54} color="#ff724a" />
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   } else {
     return (
-      <View>
-        <View
-          style={{
-            height: 180,
-            backgroundColor: "#ff724a",
-            borderBottomLeftRadius: 40,
-            borderBottomRightRadius: 40,
-          }}
-        >
-          <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
-            Profile
-          </Text>
-          <View style={styles.logout}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                const uJobs = getUserJobs(usr);
-                setJobs([...uJobs]);
-                setTimeout(() => {
-                  setLoading(false);
-                }, 250);
-              }}
-              style={{ marginRight: 10 }}
-            >
-              <Foundation name="refresh" size={34} color="white" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                logout();
-              }}
-            >
-              <MaterialCommunityIcons name="logout" size={34} color="white" />
-            </TouchableOpacity>
-          </View>
-          <Text
+      <ScrollView
+        style={{ flex: 1, backgroundColor: "#fff" }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            colors={["#ff724a"]}
+            onRefresh={() => {
+              const uJobs = getUserJobs(usr);
+              setJobs([...uJobs]);
+              const cB = getBalance(usr);
+              setBalance(cB);
+              setLoading(false);
+            }}
+          />
+        }
+      >
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+          <View
             style={{
-              color: "white",
-              fontWeight: "bold",
-              fontSize: 15,
-              bottom: 75,
-              right: -5,
+              height: 180,
+              backgroundColor: "#ff724a",
+              borderBottomLeftRadius: 40,
+              borderBottomRightRadius: 40,
             }}
           >
-            {balance} junior bucks remaining
-          </Text>
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
+              Profile
+            </Text>
+            <View style={styles.logout}>
+              <TouchableOpacity
+                onPress={() => {
+                  logout();
+                }}
+              >
+                <MaterialCommunityIcons name="logout" size={34} color="white" />
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={{
+                color: "white",
+                fontWeight: "bold",
+                fontSize: 15,
+                bottom: 15,
+                right: -5,
+              }}
+            >
+              {balance} junior bucks remaining
+            </Text>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                bottom: -20,
+                left: 179,
+                backgroundColor: "white",
+                width: 54,
+                borderRadius: 40,
+              }}
+              onPress={() => {
+                navigation.navigate("register-service");
+              }}
+            >
+              <AntDesign name="pluscircle" size={54} color="#20e648" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.jobsContainer}>
+            <Text style={{ padding: 5, fontSize: 25 }}>
+              Services you offer:
+            </Text>
+            <Text style={{ padding: 5, fontSize: 20 }}>
+              You don't offer any services yet!
+            </Text>
+          </View>
         </View>
-        <View style={styles.jobsContainer}>
-          <Text style={{ padding: 5, fontSize: 25 }}>Services you offer:</Text>
-          <Text style={{ padding: 5, fontSize: 20 }}>
-            You don't offer any services yet!
-          </Text>
-        </View>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={styles.TouchableOpacityStyle}
-          onPress={() => {
-            navigation.navigate("register-service");
-          }}
-        >
-          <AntDesign name="pluscircle" size={54} color="#ff724a" />
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   }
 };
