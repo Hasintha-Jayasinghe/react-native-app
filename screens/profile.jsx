@@ -12,17 +12,11 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import JobCard from "../components/jobCard";
 import RegisterScreen from "./registerService";
-import CameraScreen from "./cameraScreen";
+import Orders from "./orders";
 
-import {
-  MaterialCommunityIcons,
-  AntDesign,
-  Foundation,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import userContext from "../userContext";
 import { getUserJobs, deleteJob, getBalance } from "../firebase/firebase";
-import { TabRouter } from "@react-navigation/native";
-
 const Screen = ({ navigation }) => {
   const { logout, usr } = useContext(userContext);
   const [jobs, setJobs] = useState([]);
@@ -273,8 +267,8 @@ const profile = ({ navigation }) => {
         }}
       />
       <Stack.Screen
-        name="camera"
-        component={CameraScreen}
+        name="orders"
+        component={Orders}
         options={{
           headerTitle: () => (
             <Text
@@ -286,7 +280,7 @@ const profile = ({ navigation }) => {
                 fontWeight: "bold",
               }}
             >
-              Camera
+              Orders
             </Text>
           ),
           headerStyle: {
