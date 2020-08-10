@@ -10,17 +10,17 @@ import {
   Alert,
 } from "react-native";
 import FlatButton from "../components/buttons";
-import { getJobDes, getBalance, processIncome } from "../firebase/firebase";
+import {
+  getJobDes,
+  getBalance,
+  processIncome,
+  hire,
+} from "../firebase/firebase";
 import userContext from "../userContext";
 
 const JobDetails = ({ route, navigation }) => {
   const { usr } = useContext(userContext);
-  const { title } = route.params;
-  const { price } = route.params;
-  const { user } = route.params;
-  const { id } = route.params;
-  const { image } = route.params;
-  const { userId } = route.params;
+  const { title, price, user, id, image, userId } = route.params;
   const [des, setDes] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [book, setBook] = useState("Book");
@@ -58,7 +58,10 @@ const JobDetails = ({ route, navigation }) => {
           <FlatButton
             title={book}
             textStyle={{ color: "#ff724a", fontSize: 20 }}
-            style={[styles.button, { textAlign: "center" }]}
+            style={[
+              styles.button,
+              { textAlign: "center", width: booked ? 90 : 60 },
+            ]}
             onPress={() => {
               if (!booked) {
                 const currentBalance = getBalance(usr);
@@ -77,7 +80,9 @@ const JobDetails = ({ route, navigation }) => {
                       {
                         text: "Yes",
                         onPress: () => {
+                          // ! Change LATER
                           processIncome(userId, servicePrice, usr);
+                          hire(id, usr);
                           setBook("Booked");
                           setBooked(true);
                         },
@@ -93,7 +98,7 @@ const JobDetails = ({ route, navigation }) => {
           <FlatButton
             title="Review"
             textStyle={{ color: "#ff724a", fontSize: 20, textAlign: "center" }}
-            style={[styles.button, { width: 100, right: -190 }]}
+            style={[styles.button, { width: 100, right: booked ? -190 : -220 }]}
           />
         </View>
         <View>
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "white",
-    width: 90,
+    width: 60,
     height: 40,
     padding: 5,
     borderRadius: 5,

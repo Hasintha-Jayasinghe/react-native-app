@@ -16,19 +16,30 @@ import Orders from "./orders";
 
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import userContext from "../userContext";
-import { getUserJobs, deleteJob, getBalance } from "../firebase/firebase";
+import {
+  getUserJobs,
+  deleteJob,
+  getBalance,
+  getUsernameById,
+} from "../firebase/firebase";
 const Screen = ({ navigation }) => {
   const { logout, usr } = useContext(userContext);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [balance, setBalance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const uJobs = getUserJobs(usr);
     setJobs([...uJobs]);
     const cB = getBalance(usr);
     setBalance(cB);
+    if (balance == null) {
+      const cB = getBalance(usr);
+      setBalance(cB);
+    }
+    setUsername(getUsernameById(usr));
     setLoading(false);
   }, []);
 
@@ -48,11 +59,13 @@ const Screen = ({ navigation }) => {
             refreshing={refreshing}
             colors={["#ff724a"]}
             onRefresh={() => {
+              setRefreshing(true);
               const uJobs = getUserJobs(usr);
               setJobs([...uJobs]);
               const cB = getBalance(usr);
               setBalance(cB);
-              setLoading(false);
+              setUsername(getUsernameById(usr));
+              setRefreshing(false);
             }}
           />
         }
@@ -66,14 +79,25 @@ const Screen = ({ navigation }) => {
               borderBottomRightRadius: 40,
             }}
           >
-            <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
-              Profile
-            </Text>
+            {username ? (
+              <Text
+                style={{ color: "white", fontWeight: "bold", fontSize: 45 }}
+              >
+                {username}
+              </Text>
+            ) : (
+              () => {
+                const cB = getBalance(usr);
+                setBalance(cB);
+                setUsername(getUsernameById(usr));
+              }
+            )}
             <View style={styles.logout}>
               <TouchableOpacity
                 onPress={() => {
                   logout();
                 }}
+                style={{ minHeight: 40 }}
               >
                 <MaterialCommunityIcons name="logout" size={34} color="white" />
               </TouchableOpacity>
@@ -174,9 +198,19 @@ const Screen = ({ navigation }) => {
               borderBottomRightRadius: 40,
             }}
           >
-            <Text style={{ color: "white", fontWeight: "bold", fontSize: 45 }}>
-              Profile
-            </Text>
+            {username ? (
+              <Text
+                style={{ color: "white", fontWeight: "bold", fontSize: 45 }}
+              >
+                {username}
+              </Text>
+            ) : (
+              () => {
+                const cB = getBalance(usr);
+                setBalance(cB);
+                setUsername(getUsernameById(usr));
+              }
+            )}
             <View style={styles.logout}>
               <TouchableOpacity
                 onPress={() => {

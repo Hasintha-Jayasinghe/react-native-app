@@ -186,6 +186,16 @@ export const getJobs = () => {
   return jobs;
 };
 
+export const getUsernameById = (userId) => {
+  db.ref("users/" + userId).on("value", (snapshot) => {
+    window.username = snapshot.child("username").val();
+  });
+  const username = window.username;
+  window.username = null;
+
+  return username;
+};
+
 export const getJobDes = (jobId) => {
   db.ref("jobs/" + jobId).on("value", (snapshot) => {
     window.des = snapshot.child("jobDes").val();
@@ -202,7 +212,7 @@ export const deleteJob = (jobId) => {
   userRef.remove();
 };
 
-// * All Needed To Hire
+// ? All Needed To Hire
 export const processIncome = (userId, amount, buyerId) => {
   db.ref("users/" + userId + "/balance").on("value", (snapshot) => {
     window.newBalance = parseInt(snapshot.val()) + parseInt(amount);
@@ -228,4 +238,62 @@ export const getBalance = (userId) => {
   window.currentBalance = null;
 
   return current;
+};
+
+export const hire = (jobId, buyerId) => {
+  const orderId = Math.random() * 809;
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = d.getMonth();
+  const day = d.getDate();
+  const date = `${year}-${month + 1}-${day}`;
+
+  db.ref("jobs/" + jobId + "/orders/" + parseInt(orderId)).update({
+    details: {
+      buyer: buyerId,
+      date: date,
+    },
+  });
+};
+
+const getUserDetailsById = (userId) => {
+  details = [];
+
+  db.ref("users/" + userId).on("value", (snapshot) => {
+    const username = snapshot.child("username").val();
+    const email = snapshot.child("email").val();
+    const firstName = snapshot.child("firstName").val();
+    const lastName = snapshot.child("lastName").val();
+    details.push({
+      username: username,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+    });
+  });
+
+  return details;
+};
+
+// ? Function to get orders from a job
+export const getOrders = (jobId) => {
+  orders = [];
+  db.ref("jobs/" + jobId + "/orders").on("value", (snapshot) => {
+    for (let orderId in snapshot.val()) {
+      const buyerId = snapshot.child(orderId + "/details/buyer").val();
+      const date = snapshot.child(orderId + "/details/date").val();
+      const userDetails = getUserDetailsById(buyerId);
+      const { username, email, firstName, lastName } = userDetails[0];
+
+      orders.push({
+        username: username,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        date: date,
+      });
+    }
+  });
+
+  return orders;
 };

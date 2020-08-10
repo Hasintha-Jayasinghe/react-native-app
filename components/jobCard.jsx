@@ -48,6 +48,9 @@ const JobCard = ({
         }}
         activeOpacity={1}
         onLongPress={onLongPress}
+        onPress={() => {
+          navigation.navigate("orders", { jobId: id });
+        }}
       >
         <TouchableOpacity style={{ right: -160 }}>
           <Feather name="more-vertical" size={24} color="white" />
